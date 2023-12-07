@@ -1,0 +1,18 @@
+{
+	"project": {
+		"name": "Chuchito-2023-11-06T19-18-00",
+		"slot": 4,
+		"description": "Empty V5 C++ Project",
+		"platform": "V5",
+		"creationDate": "Thu, 07 Dec 2023 23:13:52 GMT",
+		"language": "cpp",
+		"sdkVersion": "V5_20220726_10_00_00",
+		"cpp": {
+			"includePath": []
+		}
+	},
+	"extension": {
+		"version": "0.5.0",
+		"json": 1
+	}
+}
