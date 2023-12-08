@@ -9,6 +9,8 @@ brain  Brain;
 
 // VEXcode device constructors
 controller Controller1 = controller(primary);
+
+motor brazoRecogedor = motor(PORT7, ratio36_1, true);
 motor catapulta = motor(PORT16, ratio36_1, false);
 motor recogedor = motor(PORT14, ratio6_1, true);
 motor elevador = motor(PORT15, ratio18_1, true);
@@ -20,7 +22,7 @@ motor rightMotorB = motor(PORT18, ratio18_1, true);
 motor_group RightDriveSmart = motor_group(rightMotorA, rightMotorB);
 drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 295-40, 40, mm, 1);
 limit LimitSwitchA = limit(Brain.ThreeWirePort.A);
-limit LimitSwitchB = limit(Brain.ThreeWirePort.H);
+
 // VEXcode generated functions
 // define variable for remote controller enable/disable
 bool RemoteControlCodeEnabled = true;
@@ -30,6 +32,7 @@ bool DrivetrainRNeedsToBeStopped_Controller1 = true;
 bool DrivetrainNeedsToBeStopped_Controller1 = true;
 bool Controller1LeftShoulderControlMotorsStopped = true;
 bool Controller1RightShoulderControlMotorsStopped = true;
+bool pickerArmNeedsToBeStopped = true;
 
 
 // some autonomous functions that can be used with controller
@@ -39,7 +42,7 @@ void RegresarCatapulta()
 {
        while(LimitSwitchA.pressing()== false)
   {
-    catapulta.spin(forward);
+    catapulta.spin(forward,100,percent);
   }
   catapulta.stop(hold);
 }
@@ -61,7 +64,7 @@ void lanzarPelota()
 {
   catapulta.spin(forward);
   wait(500,msec);
-  catapulta.stop(hold);
+  catapulta.stop();
 }
 
 //funciones por timer
@@ -115,6 +118,7 @@ void RetrocederTiempo(int tiempo, int velocidad)
   rightMotorB.stop();
   leftMotorB.stop();
   wait(100,msec);
+
   Controller1.Screen.clearLine();
 }
 void GirarDerechaTiempo(int tiempo)
@@ -263,42 +267,30 @@ int rc_auto_loop_function_Controller1() {
         Controller1RightShoulderControlMotorsStopped = false;
       }
       else if (!Controller1RightShoulderControlMotorsStopped) {
-        recogedor.stop();
+        recogedor.stop(hold);
         // set the toggle so that we don't constantly tell the motor to stop when the buttons are released
         Controller1RightShoulderControlMotorsStopped = true;
       }
 
-    
+      
+
+      //control brazo
 
       if(Controller1.ButtonUp.pressing())
       {
-        elevador.spin(forward);
-        DrivetrainNeedsToBeStopped_Controller1 = false;
+        brazoRecogedor.spin(forward,80,percent);
+        pickerArmNeedsToBeStopped = false;
       }
       else if(Controller1.ButtonDown.pressing())
       {
-        elevador.spin(reverse);
-        DrivetrainNeedsToBeStopped_Controller1 = false;
-      }/*
-      else if(Controller1.ButtonRight.pressing())
-      {
-        Drivetrain.setTurnVelocity(VelocidadDpad,percent);
-        Drivetrain.turn(right);
-        DrivetrainNeedsToBeStopped_Controller1 = false;
+        brazoRecogedor.spin(reverse,80,percent);
+        pickerArmNeedsToBeStopped = false;
       }
-      else if(Controller1.ButtonLeft.pressing())
+      else if(!pickerArmNeedsToBeStopped)
       {
-        Drivetrain.setTurnVelocity(VelocidadDpad,percent);
-        Drivetrain.turn(left);
-        DrivetrainNeedsToBeStopped_Controller1 = false;
-      }*/
-      else if (!DrivetrainNeedsToBeStopped_Controller1) {
-        elevador.stop(hold);
-        // set the toggle so that we don't constantly tell the motor to stop when the buttons are released
-        DrivetrainNeedsToBeStopped_Controller1 = true;
+        brazoRecogedor.stop(hold);
+        pickerArmNeedsToBeStopped = true;
       }
-
-
 
     }
     // wait before repeating the process

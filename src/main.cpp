@@ -10,11 +10,11 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// Controller1          controller
-// Catapulta            motor         16
-// Recogedor            motor         15
-// Drivetrain           drivetrain    19, 20, 17, 18
-// LimitSwitchA         limit         A
+// Controller1          controller                    
+// Catapulta            motor         16              
+// Recogedor            motor         15              
+// Drivetrain           drivetrain    19, 20, 17, 18  
+// LimitSwitchA         limit         A               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -39,7 +39,7 @@ competition Competition;
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-
+  
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 }
@@ -54,17 +54,20 @@ void pre_auton(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-// funciones autonomas//
+//funciones autonomas//
 void avanzar(double distancia_en_pulgadas) {
   // Verifica la dirección del movimiento
   if (distancia_en_pulgadas >= 0.0) {
     // Avanza hacia adelante
-    Drivetrain.driveFor(forward, distancia_en_pulgadas, inches);
-  } else if (distancia_en_pulgadas <= 0.0) {
-    distancia_en_pulgadas = distancia_en_pulgadas * -1;
+    Drivetrain.driveFor(forward,distancia_en_pulgadas,inches);
+  }else if (distancia_en_pulgadas <= 0.0){
+    distancia_en_pulgadas = distancia_en_pulgadas*-1;
     // Avanza hacia atrás
-    Drivetrain.driveFor(reverse, distancia_en_pulgadas, inches);
+    Drivetrain.driveFor(reverse,distancia_en_pulgadas,inches);
+
+    
   }
+
 }
 
 // Función para girar
@@ -72,64 +75,54 @@ void giro(double grados) {
   // Verifica la dirección del giro
   if (grados >= 0.0) {
     // Gira a la derecha
-    Drivetrain.turnFor(right, grados, degrees);
+    Drivetrain.turnFor(right,grados,degrees);
   } else {
-    grados = grados * -1;
+    grados=grados*-1;
     // Gira a la izquierda
-    Drivetrain.turnFor(left, grados, degrees);
+    Drivetrain.turnFor(left,grados,degrees);
   }
+
+  }
+
+
+
+void soltarPrecarga()
+{
+catapulta.spin(forward,100,percent);
+wait(3000,msec);
+catapulta.stop();
 }
 
-void soltarPrecarga() {
-  catapulta.spin(forward);
-  wait(3000, msec);
-  catapulta.stop();
+
+void recoger(){
+   recogedor.spin(reverse,100,percent); 
+   wait(1500,msec);
+   recogedor.stop(); 
 }
-
-void movimientobasico() {
-
-  AvanzarTiempo(48, 50);
-  GirarDerechaTiempo(95);
-  AvanzarTiempo(30, 50);
-  detenerMotores();
-  wait(500, msec);
-
-  RetrocederTiempo(25, 50);
-  GirarIzquierdaTiempo(100);
-  RetrocederTiempo(48, 50);
-  wait(1500, msec);
-}
-void recoger() { recogedor.spin(reverse, 100, percent); }
-
-int detenerRecogedorOld() {
-  while (LimitSwitchA.pressing() == 0) {
+int detenerRecogedor (){
+  while(LimitSwitchA.pressing()==0){
     recogedor.stop();
   }
   return 0;
 }
-bool recogedordebejalar = true;
-int detenerRecogedorReallyOld() {
-  while (recogedordebejalar == true) {
-    recogedor.spin(reverse, 100, percent);
-    if (LimitSwitchB.pressing() == true) {
-      recogedor.stop();
-      recogedordebejalar = false;
-    }
-  }
-  return 0;
+void devolverBola(int tiempo)
+{
+recogedor.spin(forward,100,percent);
+wait(tiempo,msec);
+recogedor.stop();
 }
 
-int detenerRecogedor() {
-  recogedor.spin(reverse, 100, percent);
-  wait(1500, msec);
-  recogedor.stop();
-  return 0;
-}
+void autonomoskills()
+{
+  recogedor.spin(reverse,100,percent);
+  AvanzarTiempo(10, 75);
+  recoger();
+  RetrocederTiempo(10,75);
+  lanzarPelota();
+  RegresarCatapulta();
+  wait(400,msec);
 
-void devolverBola(int tiempo) {
-  recogedor.spin(forward, 100, percent);
-  wait(tiempo, msec);
-  recogedor.stop();
+
 }
 
 int catapultaTrabada = 0;
@@ -139,60 +132,62 @@ void RescatarCatapulta()
   {
     catapultaTrabada++;
     Controller1.Screen.setCursor(1,1);
-    Controller1.Screen.print("no Trabada ");
+    Controller1.Screen.print("destraba ");
   }
   else if(catapultaTrabada==1)
   {
     catapultaTrabada++;
     Controller1.Screen.setCursor(1,1);
-    Controller1.Screen.print("Destrabar");
+    Controller1.Screen.print("trabado");
   }
   else
   { catapultaTrabada=0;
   Controller1.Screen.setCursor(1,1);
-    Controller1.Screen.print("Pica Again ");}
+  Controller1.Screen.print("destraba");}
 }
 
-void autonomoskills() {
-  recogedor.spin(reverse, 100, percent);
-  AvanzarTiempo(4, 50);
-  avanzar(5);
-  task recogeTask(detenerRecogedor);
-  wait(500, msec);
-  RetrocederTiempo(4, 50);
-  // avanzar(-5);
-  lanzarPelota();
-  RegresarCatapulta();
-  wait(500, msec);
-}
-
-void autonomobasico() {
-  recogedor.spin(reverse, 100, percent);
+void autonomobasico()
+{
+  recogedor.spin(forward,100,percent);
   RegresarCatapulta();
   recogedor.stop();
-  RetrocederTiempo(15, 100);
-  RetrocederTiempo(25, 50);
+  RetrocederTiempo(15,100);
+  RetrocederTiempo(25,50);
   GirarDerechaTiempo(135);
   AvanzarTiempo(10, 50);
   GirarDerechaTiempo(50);
-  AvanzarTiempo(13, 50);
+  AvanzarTiempo(13,50);
   task recogeTask(detenerRecogedor);
-  wait(1000, msec);
+  wait(1000,msec);
   GirarDerechaTiempo(140);
   devolverBola(1000);
   GirarDerechaTiempo(180);
-  RetrocederTiempo(23, 50);
+  RetrocederTiempo(23,50);
+  
+}
+void moverBrazoRecogedor(int tiempo)
+{
+  brazoRecogedor.spin(reverse);
+  wait(tiempo, msec);
+  brazoRecogedor.stop(brake);
+}
+
+void regresarBrazoRecogedor(int tiempo)
+{
+  brazoRecogedor.spin(forward);
+  wait(tiempo, msec);
+  brazoRecogedor.stop(brake);
 }
 
 void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-  wait(1, sec);
-  AvanzarTiempo(4, 100);
-  RetrocederTiempo(4, 100);
+  
+  //AvanzarTiempo(5, 100);
+  //RetrocederTiempo(5, 100);
+  moverBrazoRecogedor(600);
   RegresarCatapulta();
-  autonomoskills();
   autonomoskills();
   autonomoskills();
   autonomoskills();
@@ -218,8 +213,7 @@ void autonomous(void) {
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
-
-    
+      
       Controller1.ButtonX.pressed(RescatarCatapulta);
       if(catapultaTrabada==1)
       {
@@ -236,8 +230,6 @@ void usercontrol(void) {
       {
         catapulta.stop(coast);
       }
-      
-    
 
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
@@ -248,9 +240,9 @@ void usercontrol(void) {
     // update your motors, etc.
     // ........................................................................
 
-    wait(20, msec);
+    wait(20, msec); 
     // Sleep the task for a short amount of time to
-    // prevent wasted resources.
+                    // prevent wasted resources.
   }
 }
 
@@ -267,7 +259,7 @@ int main() {
 
   // Prevent main from exiting with an infinite loop.
   while (true) {
-
+    
     wait(100, msec);
   }
 }

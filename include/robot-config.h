@@ -10,7 +10,7 @@ extern motor_group RightDriveSmart;
 extern motor_group LeftDriveSmart;
 extern drivetrain Drivetrain;
 extern limit LimitSwitchA;
-extern limit LimitSwitchB;
+extern motor brazoRecogedor;
 
 void RecogerRapido(int tiempo);
 void lanzarPelota();
@@ -22,6 +22,7 @@ float gradosTiempo(int grados);
 void driveDistance(float pulgadas);
 void turnDistance(float pulgadas);
 void detenerMotores();
+
 
 void AvanzarTiempo(int tiempo, int velocidad);
 void RetrocederTiempo(int tiempo, int velocidad);
