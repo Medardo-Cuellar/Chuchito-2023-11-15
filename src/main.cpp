@@ -54,6 +54,96 @@ void pre_auton(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+
+//pid control for autonomous
+
+//pid settings
+
+double kP = 0.2;
+double kI = 0.005;
+double kD =0.1;
+
+double turnkP = 0.0;
+double turnkI = 0.0;
+double turnkD =0.0;
+
+
+// autonomous settings
+int desiredValue = 0;
+
+int error; //sensorValue - DesiredValue : Position
+int prevError = 0; //position 20 msec ago
+int derivative; // error - previous error :  speed control
+int totalError = 0; //total error = totalerror + error
+
+int desiredTurnValue = 0;
+
+int turnError; //sensorValue - DesiredValue : Position
+int turnPrevError = 0; //position 20 msec ago
+int turnDerivative; // error - previous error :  speed control
+int turnTotalError = 0; //total error = totalerror + error
+
+
+bool enableDrivePID = true;
+bool resetDriveSensors = true;
+
+int drivePID(int avance, int vuelta)
+{
+  desiredValue = avance;
+  desiredTurnValue = vuelta;
+
+  while(enableDrivePID)
+  {
+    if (resetDriveSensors)
+    {
+      resetDriveSensors = false;
+      LeftDriveSmart.setPosition(0,degrees);
+      RightDriveSmart.setPosition(0,degrees);
+    }
+    int leftMotorPosition = LeftDriveSmart.position(degrees);
+    int rightMotorPosition = RightDriveSmart.position(degrees);
+    ///////////////////////////////////
+    //lateral movement pid
+    ///////////////////////////////////
+    int averagePosition = (leftMotorPosition+rightMotorPosition)/2;
+
+    //Proportional
+    error = averagePosition - desiredValue;
+    //derivative
+    derivative = error - prevError;
+
+    //Integral (position in time)
+    totalError += error;
+
+    double lateralMotorPower = (error * kP + derivative * kD + totalError * kI);
+
+    ///////////////////////////////////
+    //turning movement pid
+    ///////////////////////////////////
+      int turnDifference = (leftMotorPosition-rightMotorPosition);
+
+    //Proportional
+    turnError = turnDifference - desiredTurnValue;
+    //derivative
+    turnDerivative = turnError - turnPrevError;
+
+    //Integral (position in time)
+    turnTotalError += turnError;
+
+    double turnMotorPower = (error * turnkP + derivative * turnkI + totalError * turnkD);
+
+    LeftDriveSmart.spin(forward,lateralMotorPower+turnMotorPower,voltageUnits::volt);
+    RightDriveSmart.spin(forward,lateralMotorPower+turnMotorPower,voltageUnits::volt);
+    
+    prevError = error;
+    turnPrevError = turnError;
+    vex::task::sleep(20);
+
+  }
+  return 1;
+}
+
+
 //funciones autonomas//
 void avanzar(double distancia_en_pulgadas) {
   // Verifica la dirección del movimiento
@@ -112,17 +202,15 @@ wait(tiempo,msec);
 recogedor.stop();
 }
 
-void autonomoskills()
+void autonomoskills(int tiempo)
 {
   recogedor.spin(reverse,100,percent);
-  AvanzarTiempo(10, 75);
+  AvanzarTiempo(tiempo, 40);
   recoger();
-  RetrocederTiempo(10,75);
+  RetrocederTiempo(tiempo, 40);
   lanzarPelota();
   RegresarCatapulta();
   wait(400,msec);
-
-
 }
 
 int catapultaTrabada = 0;
@@ -186,18 +274,20 @@ void autonomous(void) {
   
   //AvanzarTiempo(5, 100);
   //RetrocederTiempo(5, 100);
-  moverBrazoRecogedor(600);
+  //drivePID(10,0);
+
+ moverBrazoRecogedor(600);
   RegresarCatapulta();
-  autonomoskills();
-  autonomoskills();
-  autonomoskills();
-  autonomoskills();
-  autonomoskills();
-  autonomoskills();
-  autonomoskills();
-  autonomoskills();
-  autonomoskills();
-  autonomoskills();
+  autonomoskills(4);
+  autonomoskills(4);
+  autonomoskills(4);
+  autonomoskills(4);
+  autonomoskills(3);
+  autonomoskills(3);
+  autonomoskills(3);
+  autonomoskills(3);
+  autonomoskills(3);
+  autonomoskills(3); 
 }
 
 /*---------------------------------------------------------------------------*/
@@ -212,6 +302,7 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
+    enableDrivePID = false;
   while (1) {
       
       Controller1.ButtonX.pressed(RescatarCatapulta);
