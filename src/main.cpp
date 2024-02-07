@@ -117,18 +117,19 @@ wait(tiempo,msec);
 recogedor.stop();
 }
 
-void autonomoskills(int tiempo)
+void lanzamientoPelotaAutonomo(int distancia)
 {
   recogedor.spin(reverse,100,percent);
-  AvanzarTiempo(tiempo, 40);
+  AvanzarTiempo(distancia, 40);
   recoger();
-  RetrocederTiempo(tiempo, 40);
+  RetrocederTiempo(distancia, 40);
   lanzarPelota();
   RegresarCatapulta();
   wait(400,msec);
 }
 
 int catapultaTrabada = 0;
+
 void RescatarCatapulta()
 {
   if(catapultaTrabada==0)
@@ -149,25 +150,6 @@ void RescatarCatapulta()
   Controller1.Screen.print("destraba");}
 }
 
-void autonomobasico()
-{
-  recogedor.spin(forward,100,percent);
-  RegresarCatapulta();
-  recogedor.stop();
-  RetrocederTiempo(15,100);
-  RetrocederTiempo(25,50);
-  GirarDerechaTiempo(135);
-  AvanzarTiempo(10, 50);
-  GirarDerechaTiempo(50);
-  AvanzarTiempo(13,50);
-  task recogeTask(detenerRecogedor);
-  wait(1000,msec);
-  GirarDerechaTiempo(140);
-  devolverBola(1000);
-  GirarDerechaTiempo(180);
-  RetrocederTiempo(23,50);
-  
-}
 void moverBrazoRecogedor(int tiempo)
 {
   brazoRecogedor.spin(reverse);
@@ -191,18 +173,18 @@ void autonomous(void) {
   //RetrocederTiempo(5, 100);
   //drivePID(10,0);
 
- moverBrazoRecogedor(600);
+  moverBrazoRecogedor(600);
   RegresarCatapulta();
-  autonomoskills(4);
-  autonomoskills(4);
-  autonomoskills(4);
-  autonomoskills(4);
-  autonomoskills(3);
-  autonomoskills(3);
-  autonomoskills(3);
-  autonomoskills(3);
-  autonomoskills(3);
-  autonomoskills(3); 
+  lanzamientoPelotaAutonomo(4);
+  lanzamientoPelotaAutonomo(4);
+  lanzamientoPelotaAutonomo(4);
+  lanzamientoPelotaAutonomo(4);
+  lanzamientoPelotaAutonomo(3);
+  lanzamientoPelotaAutonomo(3);
+  lanzamientoPelotaAutonomo(3);
+  lanzamientoPelotaAutonomo(3);
+  lanzamientoPelotaAutonomo(3);
+  lanzamientoPelotaAutonomo(3); 
 }
 
 /*---------------------------------------------------------------------------*/
