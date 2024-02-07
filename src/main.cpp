@@ -128,26 +128,19 @@ void lanzamientoPelotaAutonomo(int distancia)
   wait(400,msec);
 }
 
-int catapultaTrabada = 0;
+bool catapultaTrabada = true;
 
 void RescatarCatapulta()
 {
-  if(catapultaTrabada==0)
+  if(catapultaTrabada)
   {
-    catapultaTrabada++;
     Controller1.Screen.setCursor(1,1);
     Controller1.Screen.print("destraba ");
   }
-  else if(catapultaTrabada==1)
-  {
-    catapultaTrabada++;
+  else
     Controller1.Screen.setCursor(1,1);
     Controller1.Screen.print("trabado");
   }
-  else
-  { catapultaTrabada=0;
-  Controller1.Screen.setCursor(1,1);
-  Controller1.Screen.print("destraba");}
 }
 
 void moverBrazoRecogedor(int tiempo)
@@ -203,7 +196,7 @@ void usercontrol(void) {
   while (1) {
       
       Controller1.ButtonX.pressed(RescatarCatapulta);
-      if(catapultaTrabada==1)
+      if(catapultaTrabada)
       {
        if(LimitSwitchA.pressing()==0)
         {
