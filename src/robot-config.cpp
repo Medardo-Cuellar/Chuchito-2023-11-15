@@ -39,7 +39,7 @@ bool pickerArmNeedsToBeStopped = true;
 
 void RegresarCatapulta()
 {
-       while(LimitSwitchA.pressing()== false)
+  while(LimitSwitchA.pressing()== false)
   {
     catapulta.spin(forward,100,percent);
   }
@@ -105,6 +105,7 @@ void AvanzarTiempo(int tiempo, int velocidad)
 void RetrocederTiempo(int tiempo, int velocidad)
 {
   Controller1.Screen.setCursor(1,2);
+  Controller1.Screen.clearLine();
   Controller1.Screen.print("Retrocediendo");
   tiempo = distanciaTiempo(tiempo);
   rightMotorA.spin(reverse,velocidad,percent);

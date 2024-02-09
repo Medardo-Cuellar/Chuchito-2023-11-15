@@ -135,13 +135,18 @@ void RescatarCatapulta()
   if(catapultaTrabada)
   {
     Controller1.Screen.setCursor(1,1);
-    Controller1.Screen.print("destraba ");
+    Controller1.Screen.clearLine();
+    Controller1.Screen.print("destrabar ");
+    catapultaTrabada=false;
   }
   else
+  {
     Controller1.Screen.setCursor(1,1);
-    Controller1.Screen.print("trabado");
+    Controller1.Screen.clearLine();
+    Controller1.Screen.print("no trabado");
+    catapultaTrabada=true;
   }
-}
+} 
 
 void moverBrazoRecogedor(int tiempo)
 {
@@ -166,20 +171,19 @@ void autonomous(void) {
   //RetrocederTiempo(5, 100);
   //drivePID(10,0);
 
-  moverBrazoRecogedor(600);
+  //moverBrazoRecogedor(600);
   RegresarCatapulta();
-  lanzamientoPelotaAutonomo(4);
-  lanzamientoPelotaAutonomo(4);
-  lanzamientoPelotaAutonomo(4);
-  lanzamientoPelotaAutonomo(4);
-  lanzamientoPelotaAutonomo(3);
-  lanzamientoPelotaAutonomo(3);
-  lanzamientoPelotaAutonomo(3);
-  lanzamientoPelotaAutonomo(3);
-  lanzamientoPelotaAutonomo(3);
-  lanzamientoPelotaAutonomo(3); 
+  int variablelanzamiento = 5;
+  for(int i=0; i<5; i++)
+  {
+    lanzamientoPelotaAutonomo(variablelanzamiento);
+  }
+  variablelanzamiento--;
+  for(int i=0; i<5; i++)
+  {
+    lanzamientoPelotaAutonomo(variablelanzamiento);
+  }
 }
-
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              User Control Task                            */
