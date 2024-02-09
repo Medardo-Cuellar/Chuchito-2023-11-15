@@ -36,6 +36,11 @@ bool pickerArmNeedsToBeStopped = true;
 
 // some autonomous functions that can be used with controller
 
+void cursorPantallaControl()
+{
+  Controller1.Screen.setCursor(1,2);
+  Controller1.Screen.clearLine()
+}
 
 void RegresarCatapulta()
 {
@@ -87,7 +92,7 @@ float gradosTiempo(int grados)
 
 void AvanzarTiempo(int tiempo, int velocidad)
 {
-  Controller1.Screen.setCursor(1,2);
+  cursorPantallaControl();
   Controller1.Screen.print("Avanzando");
   tiempo = distanciaTiempo(tiempo);
   rightMotorA.spin(forward,velocidad,percent);

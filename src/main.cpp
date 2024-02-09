@@ -57,8 +57,6 @@ void pre_auton(void) {
 
 
 
-
-
 //funciones autonomas//
 void avanzar(double distancia_en_pulgadas) {
   // Verifica la dirección del movimiento
@@ -134,15 +132,13 @@ void RescatarCatapulta()
 {
   if(catapultaTrabada)
   {
-    Controller1.Screen.setCursor(1,1);
-    Controller1.Screen.clearLine();
+    cursorPantallaControl();
     Controller1.Screen.print("destrabar ");
     catapultaTrabada=false;
   }
   else
   {
-    Controller1.Screen.setCursor(1,1);
-    Controller1.Screen.clearLine();
+    cursorPantallaControl();
     Controller1.Screen.print("no trabado");
     catapultaTrabada=true;
   }
@@ -167,22 +163,17 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
   
-  //AvanzarTiempo(5, 100);
-  //RetrocederTiempo(5, 100);
-  //drivePID(10,0);
-
   //moverBrazoRecogedor(600);
   RegresarCatapulta();
-  int variablelanzamiento = 5;
-  for(int i=0; i<5; i++)
+  int variablelanzamiento = 3;
+  for(int i=1; i<=10; i++)
   {
+    if(i==4){variablelanzamiento++;}
+    else if(i==7){variablelanzamiento++;}    
     lanzamientoPelotaAutonomo(variablelanzamiento);
   }
-  variablelanzamiento--;
-  for(int i=0; i<5; i++)
-  {
-    lanzamientoPelotaAutonomo(variablelanzamiento);
-  }
+  
+
 }
 /*---------------------------------------------------------------------------*/
 /*                                                                           */

@@ -12,6 +12,7 @@ extern drivetrain Drivetrain;
 extern limit LimitSwitchA;
 extern motor brazoRecogedor;
 
+void cursorPantallaControl();
 void RecogerRapido(int tiempo);
 void lanzarPelota();
 void lanzarPelotaconRecogedor(int tiempo);
