@@ -19,6 +19,7 @@
 
 #include "vex.h"
 #include "pid.h"
+#include "funcionesautonomas.h"
 
 using namespace vex;
 
@@ -39,6 +40,7 @@ competition Competition;
 
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
+  
   vexcodeInit();
   
   // All activities that occur before the competition starts
@@ -54,109 +56,6 @@ void pre_auton(void) {
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
-
-
-
-//funciones autonomas//
-void avanzar(double distancia_en_pulgadas) {
-  // Verifica la dirección del movimiento
-  if (distancia_en_pulgadas >= 0.0) {
-    // Avanza hacia adelante
-    Drivetrain.driveFor(forward,distancia_en_pulgadas,inches);
-  }else if (distancia_en_pulgadas <= 0.0){
-    distancia_en_pulgadas = distancia_en_pulgadas*-1;
-    // Avanza hacia atrás
-    Drivetrain.driveFor(reverse,distancia_en_pulgadas,inches);
-
-    
-  }
-
-}
-
-// Función para girar
-void giro(double grados) {
-  // Verifica la dirección del giro
-  if (grados >= 0.0) {
-    // Gira a la derecha
-    Drivetrain.turnFor(right,grados,degrees);
-  } else {
-    grados=grados*-1;
-    // Gira a la izquierda
-    Drivetrain.turnFor(left,grados,degrees);
-  }
-
-  }
-
-
-
-void soltarPrecarga()
-{
-catapulta.spin(forward,100,percent);
-wait(3000,msec);
-catapulta.stop();
-}
-
-
-void recoger(){
-   recogedor.spin(reverse,100,percent); 
-   wait(1500,msec);
-   recogedor.stop(); 
-}
-int detenerRecogedor (){
-  while(LimitSwitchA.pressing()==0){
-    recogedor.stop();
-  }
-  return 0;
-}
-void devolverBola(int tiempo)
-{
-recogedor.spin(forward,100,percent);
-wait(tiempo,msec);
-recogedor.stop();
-}
-
-void lanzamientoPelotaAutonomo(int distancia)
-{
-  recogedor.spin(reverse,100,percent);
-  AvanzarTiempo(distancia, 40);
-  recoger();
-  RetrocederTiempo(distancia, 40);
-  lanzarPelota();
-  RegresarCatapulta();
-  wait(400,msec);
-}
-
-bool catapultaTrabada = true;
-
-void RescatarCatapulta()
-{
-  if(catapultaTrabada)
-  {
-    cursorPantallaControl();
-    Controller1.Screen.print("destrabar ");
-    catapultaTrabada=false;
-  }
-  else
-  {
-    cursorPantallaControl();
-    Controller1.Screen.print("no trabado");
-    catapultaTrabada=true;
-  }
-} 
-
-void moverBrazoRecogedor(int tiempo)
-{
-  brazoRecogedor.spin(reverse);
-  wait(tiempo, msec);
-  brazoRecogedor.stop(brake);
-}
-
-void regresarBrazoRecogedor(int tiempo)
-{
-  brazoRecogedor.spin(forward);
-  wait(tiempo, msec);
-  brazoRecogedor.stop(brake);
-}
 
 void autonomous(void) {
   // ..........................................................................
@@ -188,24 +87,9 @@ void autonomous(void) {
 void usercontrol(void) {
   // User control code here, inside the loop
     enableDrivePID = false;
+
   while (1) {
       
-      Controller1.ButtonX.pressed(RescatarCatapulta);
-      if(catapultaTrabada)
-      {
-       if(LimitSwitchA.pressing()==0)
-        {
-        catapulta.spin(forward,100,percent);
-        }
-      else if (Controller1.ButtonL1.pressing()==0) 
-        {
-        catapulta.stop(hold);
-        }
-      }
-      else
-      {
-        catapulta.stop(coast);
-      }
 
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo

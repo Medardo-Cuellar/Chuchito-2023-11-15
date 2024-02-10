@@ -11,24 +11,14 @@ extern motor_group LeftDriveSmart;
 extern drivetrain Drivetrain;
 extern limit LimitSwitchA;
 extern motor brazoRecogedor;
+extern motor rightMotorA;
+extern motor leftMotorA;
+extern motor rightMotorB;
+extern motor leftMotorB;
 
-void cursorPantallaControl();
-void RecogerRapido(int tiempo);
-void lanzarPelota();
-void lanzarPelotaconRecogedor(int tiempo);
+
 void RegresarCatapulta();
 
-float distanciaTiempo(int pulgadas);
-float gradosTiempo(int grados);
-void driveDistance(float pulgadas);
-void turnDistance(float pulgadas);
-void detenerMotores();
-
-
-void AvanzarTiempo(int tiempo, int velocidad);
-void RetrocederTiempo(int tiempo, int velocidad);
-void GirarDerechaTiempo(int tiempo);
-void GirarIzquierdaTiempo(int tiempo);
 
 
 

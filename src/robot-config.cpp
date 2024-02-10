@@ -1,4 +1,5 @@
 #include "vex.h"
+#include "funcionesautonomas.h"
 
 using namespace vex;
 using signature = vision::signature;
@@ -33,169 +34,34 @@ bool Controller1LeftShoulderControlMotorsStopped = true;
 bool Controller1RightShoulderControlMotorsStopped = true;
 bool pickerArmNeedsToBeStopped = true;
 
+bool catapultaTrabada = true;
 
-// some autonomous functions that can be used with controller
-
-void cursorPantallaControl()
+void RescatarCatapulta()
 {
-  Controller1.Screen.setCursor(1,2);
-  Controller1.Screen.clearLine()
-}
-
-void RegresarCatapulta()
-{
-  while(LimitSwitchA.pressing()== false)
+  if(catapultaTrabada)
   {
-    catapulta.spin(forward,100,percent);
+    cursorPantallaControl();
+    Controller1.Screen.print("destrabar ");
+    catapultaTrabada=false;
   }
-  catapulta.stop(hold);
-}
-void RecogerRapido(int tiempo)
-{
-  recogedor.spin(forward);
-  wait(tiempo,msec);
-}
-
-void lanzarPelotaconRecogedor(int tiempo)
-{
-  recogedor.spin(reverse);
-  wait(tiempo,msec);
-  recogedor.spin(forward);
-  wait(tiempo,msec);     
-}
-
-void lanzarPelota()
-{
-  catapulta.spin(forward);
-  wait(500,msec);
-  catapulta.stop();
-}
-
-//funciones por timer
-int velocidadAutonoma = 50;
-int velocidadGiroAutonomo = 25;
-float distanciaTiempo(int pulgadas)
-{
-  // cuadro = 24 inches;
-  int tiempoporcuadro = 1150;
-  int tiempopulgada = tiempoporcuadro/24;
-  int tiempototal = pulgadas*tiempopulgada;
-  return tiempototal;
-}
-
-float gradosTiempo(int grados)
-{
-  //tiempo por grado = 7.55 grados @ 50% power
-  float tiempototal = 10*grados;
-  return tiempototal;
-}
-
-void AvanzarTiempo(int tiempo, int velocidad)
-{
-  cursorPantallaControl();
-  Controller1.Screen.print("Avanzando");
-  tiempo = distanciaTiempo(tiempo);
-  rightMotorA.spin(forward,velocidad,percent);
-  leftMotorA.spin(forward,velocidad,percent);
-  rightMotorB.spin(forward,velocidad,percent);
-  leftMotorB.spin(forward,velocidad,percent);
-  wait(tiempo,msec);
-  rightMotorA.stop();
-  leftMotorA.stop();
-  rightMotorB.stop();
-  leftMotorB.stop();
-  wait(100,msec);
-  Controller1.Screen.clearLine();
-}
-void RetrocederTiempo(int tiempo, int velocidad)
-{
-  Controller1.Screen.setCursor(1,2);
-  Controller1.Screen.clearLine();
-  Controller1.Screen.print("Retrocediendo");
-  tiempo = distanciaTiempo(tiempo);
-  rightMotorA.spin(reverse,velocidad,percent);
-  leftMotorA.spin(reverse,velocidad,percent);
-  rightMotorB.spin(reverse,velocidad,percent);
-  leftMotorB.spin(reverse,velocidad,percent);
-  wait(tiempo,msec);
-  rightMotorA.stop();
-  leftMotorA.stop();
-  rightMotorB.stop();
-  leftMotorB.stop();
-  wait(100,msec);
-
-  Controller1.Screen.clearLine();
-}
-void GirarDerechaTiempo(int tiempo)
-{
-  Controller1.Screen.setCursor(1,2);
-  Controller1.Screen.print("Giro Derecha");
-  tiempo = gradosTiempo(tiempo);
-  rightMotorA.spin(reverse,velocidadGiroAutonomo,percent);
-  leftMotorA.spin(forward,velocidadGiroAutonomo,percent);
-  rightMotorB.spin(reverse,velocidadGiroAutonomo,percent);
-  leftMotorB.spin(forward,velocidadGiroAutonomo,percent);
-  wait(tiempo,msec);
-  rightMotorA.stop();
-  leftMotorA.stop();
-  rightMotorB.stop();
-  leftMotorB.stop();
-  wait(100,msec);
-  Controller1.Screen.clearLine();
-}
-void GirarIzquierdaTiempo(int tiempo)
-{
-  Controller1.Screen.setCursor(1,2);
-  Controller1.Screen.print("Giro Izquierda");
-  tiempo = gradosTiempo(tiempo);
-  rightMotorA.spin(forward,velocidadGiroAutonomo,percent);
-  leftMotorA.spin(reverse,velocidadGiroAutonomo,percent);
-  rightMotorB.spin(forward,velocidadGiroAutonomo,percent);
-  leftMotorB.spin(reverse,velocidadGiroAutonomo,percent);
-  wait(tiempo,msec);
-  rightMotorA.stop();
-  leftMotorA.stop();
-  rightMotorB.stop();
-  leftMotorB.stop();
-  wait(100,msec);
-  Controller1.Screen.clearLine();
-}
-
-
-//funciones por distancia
-//establecemos constantes con datos de nuestro motor
-
-  const float diametroLlanta = 4; // pulgadas
-  const float circunferenciaLlanta = diametroLlanta * 3.1416;
-  float pulgadasPorGrado = circunferenciaLlanta / 360;
-
-  void driveDistance(float pulgadas)
+  else
   {
-    float grados = pulgadas/pulgadasPorGrado;
-    LeftDriveSmart.spinFor(forward, grados, deg,false);
-    RightDriveSmart.spinFor(forward, grados, deg);
+    cursorPantallaControl();
+    Controller1.Screen.print("no trabado");
+    catapultaTrabada=true;
   }
-  void turnDistance(float giro)
-  {
-    float grados = giro / pulgadasPorGrado;
-    LeftDriveSmart.spinFor(forward, grados, deg,false);
-    RightDriveSmart.spinFor(reverse, grados, deg);
-  }
-
-  void detenerMotores()
-  {
-    LeftDriveSmart.stop();
-    RightDriveSmart.stop();
-  }
-
+}
 
 // define a task that will handle monitoring inputs from Controller1
-int rc_auto_loop_function_Controller1() {
+int rc_auto_loop_function_Controller1() 
+{
   // process the controller input every 20 milliseconds
   // update the motors based on the input values
   
-  while(true) {
-    if(RemoteControlCodeEnabled) {
+  while(true) 
+  {
+    if(RemoteControlCodeEnabled) 
+    {
       // calculate the drivetrain motor velocities from the controller joystick axies
       // left = Axis3 + Axis1
       // right = Axis3 - Axis1
@@ -203,66 +69,71 @@ int rc_auto_loop_function_Controller1() {
       int drivetrainRightSideSpeed = Controller1.Axis3.position() - Controller1.Axis1.position();
       
       // check if the value is inside of the deadband range
-      if (drivetrainLeftSideSpeed < 5 && drivetrainLeftSideSpeed > -5) {
+      if (drivetrainLeftSideSpeed < 5 && drivetrainLeftSideSpeed > -5) 
+      {
         // check if the left motor has already been stopped
-        if (DrivetrainLNeedsToBeStopped_Controller1) {
+        if (DrivetrainLNeedsToBeStopped_Controller1) 
+        {
           // stop the left drive motor
           LeftDriveSmart.stop(brake);
           // tell the code that the left motor has been stopped
           DrivetrainLNeedsToBeStopped_Controller1 = false;
         }
-      } else {
+      } 
+      else 
+      {
         // reset the toggle so that the deadband code knows to stop the left motor nexttime the input is in the deadband range
         DrivetrainLNeedsToBeStopped_Controller1 = true;
       }
       // check if the value is inside of the deadband range
-      if (drivetrainRightSideSpeed < 5 && drivetrainRightSideSpeed > -5) {
+      if (drivetrainRightSideSpeed < 5 && drivetrainRightSideSpeed > -5) 
+      {
         // check if the right motor has already been stopped
-        if (DrivetrainRNeedsToBeStopped_Controller1) {
+        if (DrivetrainRNeedsToBeStopped_Controller1) 
+        {
           // stop the right drive motor
           RightDriveSmart.stop(brake);
           // tell the code that the right motor has been stopped
           DrivetrainRNeedsToBeStopped_Controller1 = false;
         }
-      } else {
+      } 
+      else 
+      {
         // reset the toggle so that the deadband code knows to stop the right motor next time the input is in the deadband range
         DrivetrainRNeedsToBeStopped_Controller1 = true;
       }
       
       // only tell the left drive motor to spin if the values are not in the deadband range
-      if (DrivetrainLNeedsToBeStopped_Controller1) {
+      if (DrivetrainLNeedsToBeStopped_Controller1) 
+      {
         LeftDriveSmart.setVelocity(drivetrainLeftSideSpeed, percent);
         LeftDriveSmart.spin(forward);
       }
       // only tell the right drive motor to spin if the values are not in the deadband range
-      if (DrivetrainRNeedsToBeStopped_Controller1) {
+      if (DrivetrainRNeedsToBeStopped_Controller1) 
+      {
         RightDriveSmart.setVelocity(drivetrainRightSideSpeed, percent);
         RightDriveSmart.spin(forward);
       }
        // check the ButtonL1/ButtonL2 status to control catapulta
-      if (Controller1.ButtonL1.pressing()) {
+      if (Controller1.ButtonL1.pressing()) 
+      {
         catapulta.spin(forward,100,percent);
         //cambiamos la instruccion de avanzar mientras se presiona el boton por avanzar mientras revisa si el limit esta activado
         Controller1LeftShoulderControlMotorsStopped = false;
-      }else if (!Controller1LeftShoulderControlMotorsStopped) {
+      }
+      else if (!Controller1LeftShoulderControlMotorsStopped) {
         catapulta.stop(hold);
         // set the toggle so that we don't constantly tell the motor to stop when the buttons are released
         Controller1LeftShoulderControlMotorsStopped = true;
       }
-      //Controller1.ButtonL2.pressed(RegresarCatapulta);
-      /*
-      if(LimitSwitchA.pressing()==0){
-        catapulta.spin(forward);
-      }else if (Controller1.ButtonL1.pressing()==0) {
-        catapulta.stop(hold);
-      }
-      */
-      
-      // check the ButtonR1/ButtonR2 status to control recogedor
-      if (Controller1.ButtonR1.pressing()) {
+      if (Controller1.ButtonR1.pressing()) 
+      {
         recogedor.spin(forward,100,percent);
         Controller1RightShoulderControlMotorsStopped = false;
-      } else if (Controller1.ButtonR2.pressing()) {
+      } 
+      else if (Controller1.ButtonR2.pressing()) 
+      {
         recogedor.spin(reverse,100,percent);
         Controller1RightShoulderControlMotorsStopped = false;
       } 
@@ -271,14 +142,12 @@ int rc_auto_loop_function_Controller1() {
         RecogerRapido(500);
         Controller1RightShoulderControlMotorsStopped = false;
       }
-      else if (!Controller1RightShoulderControlMotorsStopped) {
+      else if (!Controller1RightShoulderControlMotorsStopped) 
+      {
         recogedor.stop(hold);
         // set the toggle so that we don't constantly tell the motor to stop when the buttons are released
         Controller1RightShoulderControlMotorsStopped = true;
       }
-
-      
-
       //control brazo
 
       if(Controller1.ButtonUp.pressing())
@@ -296,7 +165,25 @@ int rc_auto_loop_function_Controller1() {
         brazoRecogedor.stop(hold);
         pickerArmNeedsToBeStopped = true;
       }
-
+      if(Controller1.ButtonX.pressing())
+      {
+        RescatarCatapulta();
+        if(catapultaTrabada)
+      {
+       if(LimitSwitchA.pressing()==0)
+        {
+        catapulta.spin(forward,100,percent);
+        }
+      else if (Controller1.ButtonL1.pressing()==0) 
+        {
+        catapulta.stop(hold);
+        }
+      }
+      else
+        {
+          catapulta.stop(coast);
+        }
+      }
     }
     // wait before repeating the process
     wait(20, msec);
