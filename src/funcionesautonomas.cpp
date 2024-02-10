@@ -158,6 +158,7 @@ void AvanzarTiempo(int tiempo, int velocidad)
   wait(100,msec);
   Controller1.Screen.clearLine();
 }
+
 void RetrocederTiempo(int tiempo, int velocidad)
 {
   Controller1.Screen.setCursor(1,2);
