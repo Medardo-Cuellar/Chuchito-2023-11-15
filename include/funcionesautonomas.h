@@ -4,9 +4,7 @@ void soltarPrecarga();
 void recoger();
 int detenerRecogedor ();
 void devolverBola(int tiempo);
-extern int distancia;
 
-void lanzamientoPelotaAutonomo(int distancia);;
 void moverBrazoRecogedor(int tiempo);
 void regresarBrazoRecogedor(int tiempo);
 void cursorPantallaControl();
@@ -38,3 +36,5 @@ void driveDistance(float pulgadas);
 void turnDistance(float giro);
 
 void detenerMotores();
+
+void lanzamientoPelotaAutonomo(int distancia);;

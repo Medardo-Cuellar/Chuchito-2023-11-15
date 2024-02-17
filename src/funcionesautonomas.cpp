@@ -58,16 +58,7 @@ wait(tiempo,msec);
 recogedor.stop();
 }
 
-void lanzamientoPelotaAutonomo(int distancia)
-{
-  recogedor.spin(reverse,100,percent);
-  AvanzarTiempo(distancia, 40);
-  recoger();
-  RetrocederTiempo(distancia, 40);
-  lanzarPelota();
-  RegresarCatapulta();
-  wait(400,msec);
-}
+
 
 
 
@@ -239,3 +230,14 @@ void GirarIzquierdaTiempo(int tiempo)
     LeftDriveSmart.stop();
     RightDriveSmart.stop();
   }
+  
+void lanzamientoPelotaAutonomo(int distancia)
+{
+  recogedor.spin(reverse,100,percent);
+  AvanzarTiempo(distancia, 40);
+  recoger();
+  RetrocederTiempo(distancia, 40);
+  lanzarPelota();
+  RegresarCatapulta();
+  wait(400,msec);
+}
